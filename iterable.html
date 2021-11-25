@@ -1,0 +1,37 @@
+<script src="https://unpkg.com/fxjs/dist/fx.js"></script>
+
+
+<!-- 홀수 n개 더하기 -->
+<script>
+  const log = console.log;
+  const {L,C} = window._;
+  //f1함수는 문장형 프로그래밍.
+  function f1(limit, list) {
+    let acc =0 ;
+    for (const a of list){
+      if(a%2){
+        const b = a*a;
+        acc += b;
+        if (--limit == 0) break;  //break로 효율을 높임.
+      }
+    }
+    log(acc);
+  }
+  //이터러블 사고형 프로그래밍.
+  function f2(limit, list) {
+    let acc =0 ;
+    for (const a of L.filter(a=> a%2, list)){
+        const b = a*a;
+        acc += b;
+        if (--limit == 0) break;  //break로 효율을 높임.
+    }
+    log(acc);
+  }
+
+  f1(3, [1,2,3,4,5,6]);
+
+
+
+
+
+</script>
