@@ -20,9 +20,8 @@
   //이터러블 사고형 프로그래밍.
   function f2(limit, list) {
     let acc =0 ;
-    for (const a of L.map(a=>a*a,L.filter(a=> a%2, list))){
-        acc += a;
-        if (--limit == 0) break;  //break로 효율을 높임.
+    for (const a of L.take(2,L.map(a=>a*a,L.filter(a=> a%2, list)))){
+        acc += a;  
     }
     log(acc);
   }
