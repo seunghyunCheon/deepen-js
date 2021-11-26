@@ -52,8 +52,16 @@
     _.map(join('=')),
     log);
   
-  log(query3(obj1));
-  query4(obj1);
+  const split = _.curry((sep, str) => str.split(sep)); 
 
+  const queryToObject = query => _.go(
+    query,
+    split("&"),
+    _.map(split("=")),
+    _.map(([k,v])=> ({[k] : v})),
+    _.reduce(Object.assign) //Object.assign과 add가 돌아가는 구조가 같다고 보면된다.
+  )
+
+  log(queryToObject('a=1&c=CC&d=DD'));
 
 </script>
