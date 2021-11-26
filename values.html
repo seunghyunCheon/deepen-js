@@ -1,0 +1,21 @@
+<script src="https://unpkg.com/fxjs/dist/fx.js"></script>
+
+<script>
+  const {L,C} = window._;
+
+  const obj1 = {
+    a:1,
+    b:2,
+    c:3,
+    d:4
+  }
+  _.go(
+    obj1,
+    L.values,
+    L.map(a=>a+10),
+    L.take(2),
+    _.reduce((a,b)=> a+b),
+    console.log
+  );
+
+</script>
