@@ -1,0 +1,23 @@
+<script src="https://unpkg.com/fxjs/dist/fx.js"></script>
+
+<script>
+  const {L,C} = window._;
+  const log = console.log;
+  const f = x => x+10;
+  const g = x => x-5;
+  const fg = x => f(g(x));
+
+  _.go(
+    2,
+    fg,
+    log
+  );
+
+//모나드를 이용함으로써 빈값에 대한 유연성을 높여준다.
+  _.go(
+    [],
+    L.map(fg),
+    _.each(log)
+  );
+
+</script>
