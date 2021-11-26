@@ -1,0 +1,26 @@
+<script src="https://unpkg.com/fxjs/dist/fx.js"></script>
+
+<script>
+
+  const log = console.log;
+
+  const users = [
+  { name : 'AA', age: 35},
+  { name : 'BB', age: 26},
+  { name : 'CC', age: 28},
+  { name : 'DD', age: 34},
+  { name : 'EE', age: 23},
+  ];
+
+  //reduce에 acc를 조합하는 복잡한 것보다, reduce + map으로 인해 reduce를 단순하게 만들어주는 게 좋다.
+  
+
+  log(_.reduce((total, u)=> total+ u.age, 0, users));
+
+  const add = (a,b) => a+b;
+
+
+  log(_.reduce(add, _.map((u)=>u.age,users)));
+
+
+</script>
