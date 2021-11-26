@@ -18,4 +18,15 @@
     console.log
   );
 
+  
+  _.go(
+    obj1,
+    L.entries,
+    L.filter(([_, v]) => v %2),
+    L.map(([k,v])=> ({[k] :v})),
+    _.take(2),
+    _.reduce(Object.assign),
+    console.log
+  );
+
 </script>
