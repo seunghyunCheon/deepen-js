@@ -20,4 +20,25 @@
     _.each(log)
   );
 
+  const users = [
+    { name:'AA', age: 35},
+    { name:'BB', age: 26},
+    { name:'CC', age: 28},
+    { name:'CC', age: 34},
+    { name:'EE', age : 23}
+  ];
+
+  const user = _.find(u=> u.name == 'DD',users);
+  log(user);
+
+  _.go(
+    users, 
+    L.filter(u=>u.name == 'CC'),
+    L.take(1),
+    _.each(log)
+  );
+  //L.take에 대해서 each로 효과를 준다.
+
+  
+
 </script>
