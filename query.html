@@ -31,8 +31,29 @@
          '');
   }
 
-  log(query2(obj1));
+  //reduce하나보단 map + filter + reduce
+
+  const join = _.curry((sep, iter) =>
+    _.reduce((a,b)=> `${a}${sep}${b}`,iter));
   
+  const query3 = obj => _.go(
+    obj,
+    Object.entries,
+    _.reject(([_,v]) => v === undefined),
+    _.map(join('=')), //map에 iter로 들어온 게 함수로 들어갈때 [a, 1]로 들어가게 되고 이는 결국 각각 reduce의 a,b가 됨.
+    join('&'),
+    log
+  )
+
+  const query4 = obj => _.go(
+    obj,
+    Object.entries,
+    _.reject(([_,v]) => v === undefined),
+    _.map(join('=')),
+    log);
+  
+  log(query3(obj1));
+  query4(obj1);
 
 
 </script>
