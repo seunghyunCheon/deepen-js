@@ -29,4 +29,54 @@
     console.log
   );
 
+  //어떠한 값이든 이터러블 프로그래밍으로 다룰 수 있따.
+  //1. 객체를 제너레이터를 이용해서 이터레이터로 만들어서 이터러블 프로그래밍
+
+  console.clear();
+  const log = console.log;
+  const a = [['a', 1], ['b', 2], ['c', 3]]; //배열 entries
+  const b = {a:1, b:2, c:3};
+  
+
+  const Objects = entries => _.go(
+    entries,
+    L.map(([k,v])=> ({[k]:v})),
+    _.reduce(Object.assign),
+    log
+  );
+
+  const object = entries => _.reduce((obj, [k,v])=>{
+    return (obj[k]= v, obj);
+  } ,{},entries)
+
+  Objects(a);
+  object(a);
+
+  let m = new Map();
+  m.set('a', 10);
+  m.set('b', 20);
+  m.set('c', 30);
+  log(m); //지금 이상태는 JSon으로 만들 수 없다. JSON에서는 허용가능한 값의 형태가
+  //정해져있음. 하지만 Map은 이터러블이기 때문에 특정함수를 통해서 Object로 만들고
+  //이를 JSON으로 보내면된다.
+
+  const mJson = _.go(m,
+    _.object,
+    log);
+
+//mapObject.
+//객체에 있는 value값을 map시키는 과정. 
+//{a:1, b:2, c:3}을 {a:11, b:12, c:13}으로
+
+const mapObjects = (f, obj) => _.go(
+  obj,
+  _.entries,
+  _.map(([k,v]) => [k,f(v)]),
+  _.object,
+  log
+);
+
+
+mapObjects(a=>a+10, b);
+
 </script>
