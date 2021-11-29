@@ -50,6 +50,10 @@ class Collection {
     this._models.push(model);
     return this;
   }
+  remove(model) {
+    this._models.pop(model);
+    return this;
+  }
   *[Symbol.iterator]() {
     yield *this._models;
   }
@@ -66,6 +70,27 @@ _.go(
   L.map(m=> m.get('name')),
   _.each(log)
 );
+
+const addAll = _.reduce(add);
+class Product extends Model{}
+class Products extends Collection {
+
+  getPrices() {
+    return L.map(p=>p.get('price'), this);
+  }
+  totalPrice() {
+    return addAll(this.getPrices());
+}
+}
+
+const products = new Products();
+products.add(new Product({ id: 1, price : 10000}));
+log( products.totalPrice());
+products.add(new Product({ id: 1, price : 10000}));
+log( products.totalPrice());
+products.add(new Product({ id: 1, price : 10000}));
+log( products.totalPrice());
+
 
 
 
