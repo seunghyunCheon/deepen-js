@@ -79,4 +79,17 @@ const mapObjects = (f, obj) => _.go(
 
 mapObjects(a=>a+10, b);
 
+console.clear();
+
+const obj2 = {a:1, b:2, c:3, d:4, e:5};
+
+const pick = (ks, obj) => _.go(
+  ks,
+  _.map((k)=> [k, obj[k]]),
+  _.object
+);
+
+log(pick(['b', 'c'], obj1)); //여기서 obj1은 객체여도, entries형태여도 된다.
+
+
 </script>
