@@ -97,12 +97,25 @@ log(pick(['b', 'c'], obj1)); //여기서 obj1은 객체여도, entries형태여�
 const users = [
   {id:5, name:'AA', age : 25},
   {id:15, name:'BB', age : 25},
-  {id:25, name:'CC', age : 25},
-  {id:35, name:'DD', age : 25},
-  {id:45, name:'EE', age : 25},
+  {id:25, name:'CC', age : 35},
+  {id:35, name:'DD', age : 45},
+  {id:45, name:'EE', age : 55},
     
 ]
+console.clear();
+const user2 =_.indexBy(u=> u.id, users);
 
-log(_.indexBy(u=> u.id, users));
+//indexBy값에 filter적용하기.
+//단순히 indexBy에 filter를 적용하면 이터러블값이 아니기 때문에 되지 않는다.
+//때문에 entries로 이터러블값을 만들어준뒤 모든 조건로직을 거치고나서 다시 
+
+_.go(
+  user2,
+  _.entries,
+  _.filter(([_, {age}])=> age>30),
+  _.object,
+  log
+);
+
 
 </script>
