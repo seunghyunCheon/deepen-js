@@ -1,0 +1,29 @@
+<script src="https://unpkg.com/fxjs/dist/fx.js"></script>
+
+<script>
+  const {L,C} = window._;
+
+  const log = console.log;
+
+  //map과 set도 사용자 정의 객체라고 볼 수 있다.
+  let m = new Map();
+  m.set('a',1);
+  m.set('b',2);
+  m.set('c',3);
+
+  log(m);
+  _.go(
+    m,
+    L.filter(([k,v])=> v%2),
+    entries => new Map(entries), 
+    log
+  );
+const add = (a,b) => a+b;
+let s = new Set();
+s.add(10);
+s.add(20);
+s.add(30);
+log(_.reduce(add,s)); 
+
+
+</script>
