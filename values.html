@@ -92,4 +92,17 @@ const pick = (ks, obj) => _.go(
 log(pick(['b', 'c'], obj1)); //여기서 obj1은 객체여도, entries형태여도 된다.
 
 
+//indexBy는 키값을 id값이나 다른 특정 속성값으로 두고 전체를 value값으로 둠으로써
+//순회하는 방식이 아닌 직접접근이 가능하도록 만든 것이다.
+const users = [
+  {id:5, name:'AA', age : 25},
+  {id:15, name:'BB', age : 25},
+  {id:25, name:'CC', age : 25},
+  {id:35, name:'DD', age : 25},
+  {id:45, name:'EE', age : 25},
+    
+]
+
+log(_.indexBy(u=> u.id, users));
+
 </script>
