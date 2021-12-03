@@ -1,0 +1,70 @@
+<script src="https://unpkg.com/fxjs/dist/fx.js"></script>
+
+<script>
+const $ = {};
+
+$.qs = (sel, parent) => document.querySelector(sel, parent);
+//html을 받아서 element로 만듬.
+$.el = html => {
+  const wrap = document.createElement('div');
+  wrap.innerHTML = html;
+  return wrap.children[0];
+};
+
+$.append = (parent, child) => parent.appendChild(child);
+
+</script>
+
+
+<script>
+  const {L,C} = window._;
+
+  const log = console.log;
+
+  const Images = {};
+  Images.fetch = () => new Promise(resolve => setTimeout(()=> resolve([
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+    { name:"HEART", url: "https://s3.marpple.co/files/m2/t3/colored_images/45_1115570_1162087_150x0.png"},
+  ]), 200));
+
+  //배열을 toString하면 ,가 딸려나온다. 때문에 이를 처리하는 함수를 만들어야함.
+
+  const string = iter => _.reduce((a,b)=>`${a}${b}`,iter);
+
+  _.strMap = _.curry(_.pipe(L.map, string));
+
+  Images.tmpl = imgs => `
+    <div class="images">
+      ${_.strMap(img => `
+        <div class="image">
+          <div class="box"><img src="${img.url}" alt=""></div>
+          <div class="name">${img.name}</div>
+        </div>
+        `,imgs)}
+    </div>
+  `;
+
+  _.go(
+    Images.fetch(),
+    Images.tmpl,
+    $.el,
+    el => $.append($.qs('body'), el),
+    log
+  );
+
+
+</script>
+
