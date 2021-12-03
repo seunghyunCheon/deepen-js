@@ -14,13 +14,13 @@ const Impt =  {
       { imp_id:13, order_id:3, amount:10000}
     ],
     2: [  
-      { imp_id:11, order_id:1, amount:15000},
-      { imp_id:12, order_id:2, amount:25000},
-      { imp_id:13, order_id:3, amount:10000}
+      { imp_id:14, order_id:4, amount:15000},
+      { imp_id:15, order_id:5, amount:25000},
+      { imp_id:16, order_id:6, amount:10000}
     ],
     3: [ 
-      { imp_id:11, order_id:1, amount:15000},
-      { imp_id:12, order_id:2, amount:25000},
+      { imp_id:17, order_id:7, amount:15000},
+      { imp_id:18, order_id:8, amount:25000},
     ],
     4: [],
     5: []
@@ -52,13 +52,24 @@ async function job() {
   );
 
   //결제가 실제로 완료된 가맹점 측 주문서 id들.
-  const orderIds = await _.go(
+  const order_Ids = await _.go(
     payments,
+    _.map(p => p.order_id),
     DB.getOrders,
-    L.map(({id})=>id),
-    _.each(log)
+    _.map(({id})=>id)
   );
-}
+
+  // 결제모듈의 payments와 가맹점의 주문서를 비교해서
+  // 결제를 취소해야할 id들을 뽑아서
+  // 결제 취소 api를 실행.
+  await _.go(
+    payments,
+    L.reject(p=> order_Ids.includes(p.order_id)),
+    L.map(p=>p.imp_id),
+    L.map(Impt.cancelPayment),
+    _.each(log)
+  )
+};
 
 job();
 
