@@ -3,7 +3,14 @@
 <script>
 const $ = {};
 
-$.qs = (sel, parent) => document.querySelector(sel, parent);
+$.qs = (sel, parent = document) => parent.querySelector(sel);
+$.qsa = (sel, parent = document) => parent.querySelectorAll(sel);
+
+
+$.find = _.curry($.qs);
+$.findAll = _.curry($.qsa);
+
+//$.qs = (sel, parent) => document.querySelector(sel, parent);
 //html을 받아서 element로 만듬.
 $.el = html => {
   const wrap = document.createElement('div');
@@ -13,6 +20,12 @@ $.el = html => {
 
 $.append = (parent, child) => parent.appendChild(child);
 
+$.closest = (sel, el) => el.closest(sel);
+
+$.remove = el => el.parentNode.removeChild(el);
+
+$.on = (event,f) => els =>
+  _.each(el => el.addEventListener('click', f), _.isIterable(els) ? els : [els] );
 </script>
 
 
@@ -52,6 +65,7 @@ $.append = (parent, child) => parent.appendChild(child);
         <div class="image">
           <div class="box"><img src="${img.url}" alt=""></div>
           <div class="name">${img.name}</div>
+          <div class="remove">x</div>
         </div>
         `,imgs)}
     </div>
@@ -62,8 +76,12 @@ $.append = (parent, child) => parent.appendChild(child);
     Images.tmpl,
     $.el,
     el => $.append($.qs('body'), el),
-    log
-  );
+    $.findAll('.remove'),
+    $.on('click', e=> _.go(
+      e.currentTarget,
+      el => $.closest('.image', el),
+      el => $.remove)
+  ));
 
 
 </script>
