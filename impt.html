@@ -27,7 +27,7 @@ const Impt =  {
   },
   getPayments : page => {
     log(`http://..?page=${page}`);
-    return _.delay(1000*2, Impt.payments[page]);
+    return _.delay(1000, Impt.payments[page]);
   },
   cancelPayment : imp_id => Promise.resolve(`${imp_id}:취소완료`)
 };
@@ -51,7 +51,13 @@ async function job() {
     _.flat
   );
 
-  log(payments);
+  //결제가 실제로 완료된 가맹점 측 주문서 id들.
+  const orderIds = await _.go(
+    payments,
+    DB.getOrders,
+    L.map(({id})=>id),
+    _.each(log)
+  );
 }
 
 job();
