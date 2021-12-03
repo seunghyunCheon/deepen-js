@@ -27,7 +27,7 @@ const Impt =  {
   },
   getPayments : page => {
     log(`http://..?page=${page}`);
-    return _.delay(1000, Impt.payments[page]);
+    return _.delay(3000, Impt.payments[page]);
   },
   cancelPayment : imp_id => Promise.resolve(`${imp_id}:취소완료`)
 };
@@ -71,10 +71,13 @@ async function job() {
   )
 };
 
-job();
+//7초에 한 번씩 하는 것과 job이 7초를 넘겼을 때 이를 기다릴떄까지 시작하지 않는 기법.
+//이를 Promise.all을 통해 if나 for문 없이 선언적으로 프로그래밍을 할 수 있다.
 
-
-
+// (function recur() {
+//   Promise.all([_.delay(7000, undefined),
+//               job()]).then(recur)
+// })();
 
 
 
