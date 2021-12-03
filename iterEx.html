@@ -1,0 +1,29 @@
+<script src="https://unpkg.com/fxjs/dist/fx.js"></script>
+
+<script>
+const {L,C} = window._;
+
+const log = console.log;
+
+const track = [
+  {cars : ['철수', '영희', '철희', '영수']},
+  {cars : ['하든', '커리', '듀란트', '탐슨']},
+  {cars : ['풀', '어빙', '릴라드', '맥칼럼']},
+  {cars : ['스파이더맨', '아이언맨']},
+  {cars : [] }    
+];
+
+_.go(
+  L.range(Infinity),
+  L.map(i=>track[i]),
+  L.map(({cars}) =>cars),
+  L.map(_.delay(1000)),
+  L.takeUntil((a) => a.length<4),
+  L.flat,
+  _.each(log)
+);
+
+
+
+
+</script>
