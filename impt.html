@@ -1,0 +1,64 @@
+<script src="https://unpkg.com/fxjs/dist/fx.js"></script>
+
+<script>
+const {L,C} = window._;
+
+const log = console.log;
+
+// 아임포트 결제 누락 스케쥴러 만들기
+const Impt =  {
+  payments: {
+    1: [
+      { imp_id:11, order_id:1, amount:15000},
+      { imp_id:12, order_id:2, amount:25000},
+      { imp_id:13, order_id:3, amount:10000}
+    ],
+    2: [  
+      { imp_id:11, order_id:1, amount:15000},
+      { imp_id:12, order_id:2, amount:25000},
+      { imp_id:13, order_id:3, amount:10000}
+    ],
+    3: [ 
+      { imp_id:11, order_id:1, amount:15000},
+      { imp_id:12, order_id:2, amount:25000},
+    ],
+    4: [],
+    5: []
+  },
+  getPayments : page => {
+    log(`http://..?page=${page}`);
+    return _.delay(1000*2, Impt.payments[page]);
+  },
+  cancelPayment : imp_id => Promise.resolve(`${imp_id}:취소완료`)
+};
+
+const DB = {
+  getOrders : ids => _.delay(100, [
+    { id:1},
+    { id:3},
+    { id:7}
+  ])
+};
+
+//결제내역을 모아서 리턴해주는 함수.
+async function job() {
+  // 결제된 결제모듈측 payments 가져온다.
+  // page 단위로 가져오는데, 결제 데이터가 있을때까지 모두 가져와서 하나로 합친다.
+  const payments = await _.go(
+    L.range(1,Infinity),
+    L.map(Impt.getPayments),
+    L.takeUntil(({length})=> length<3),
+    _.flat
+  );
+
+  log(payments);
+}
+
+job();
+
+
+
+
+
+
+</script>
