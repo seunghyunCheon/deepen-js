@@ -3,7 +3,12 @@
 <script>
 const $ = {};
 
-$.qs = document.querySelector.bind(document);
+//qs와 qsa는 curry로 못묶음(인자가 가변인자라서)
+$.qs = (sel, parent = document) => document.querySelector(sel);
+$.qsa = (sel, parent = document) => document.querySelectorAll(sel);
+//qs를 커리로 묶으면 qs의 변수가 하나라면 앞에서받은 데이터를 뒤에 변수로 사용가능.
+$.find = _.curry($.qs);
+$.findAll = _.curry($.qsa);
 
 $.el = html => {
   const wrap = document.createElement('div');
@@ -13,6 +18,13 @@ $.el = html => {
 
 
 $.append = (parent, child) => parent.appendChild(child);
+
+$.closest = _.curry((sel, el) => el.closest(sel));
+
+$.remove = el => el.parentNode.removeChild(el);
+
+$.on = (event, f) => els => 
+_.each(el => el.addEventListener(event, f), _.isIterable(els) ? els : [els]) //하나인경우도 []에 감싸주기에 each가 됨.
 </script>
 
 <script>
@@ -47,6 +59,7 @@ Images.tmpl = imgs => `
       <div class="image">
         <div class="box"><img src="${img.url}" alt =""></div>
         <div class="name">${img.name}</div>
+        <div class="remove">x</div>
       </div>
     ` ,imgs)}
   </div>
@@ -57,8 +70,53 @@ _.go(
   Images.tmpl,
   $.el,
   el => $.append($.qs('body'), el),
-  console.log
-);
+  $.findAll('.remove'),
+  $.on('click', async ({currentTarget}) => { //e.currentTarget을 if전에하면 뜨고 if안에하면 null이 뜬다. 이것은 가변적으로 값을 다루기때문에 나타나는 사이드이펙트이다.
+                                            //해결책은 미리 가변적인 값을 불변적인 값으로 구조분해해서 꺼내놓는 것.
+  if(await Ui.confirm('정말 삭제하시겠습니까?')){
+      _.go(
+          currentTarget,
+          $.closest('.image'),
+          $.remove);
+  }}));
 
+const Ui = {};
+
+Ui.confirm = msg => new Promise(resolve => _.go( //promise를 리턴함으로써 다음줄의 실행을 막음.
+    `
+      <div class="confirm">
+          <div class="msg">${msg}</div>
+          <div class="buttons">
+            <button type="button" class="cancel">취소</button>
+            <button type="button" class="ok">확인</button>
+          </div>
+      </div>
+    `,
+    $.el,
+    el => $.qs('html').appendChild(el), //body로하면 왜 안되지  //뒤에무조건 els가 오니까 $.on에서 els를 매개변수로 받음.
+    _.tap( //tap함수는 안의 내용이 어떤값을 리턴하든 바로 위값을 바로 밑에 리턴해준다.
+      $.find('.ok'),
+      $.on('click', e=> _.go(
+        e.currentTarget,
+        $.closest('.confirm'),
+        $.remove,
+        resolve(true)
+    ))),
+    _.tap(
+      $.find('.cancel'),
+      $.on('click', e=> _.go(
+        e.currentTarget,
+        $.closest('.confirm'),
+        $.remove,
+        resolve(false)
+    ))),
+));
+
+// async function conf() {
+//   await Ui.confirm('정말 삭제하시겠습니까?'); //resolve를 주어야 코드가 아래라인으로간다.
+//   console.log('hi~~');
+// }
+
+// conf()
 
 </script>
