@@ -82,35 +82,38 @@ _.go(
 
 const Ui = {};
 
-Ui.confirm = msg => new Promise(resolve => _.go( //promise를 리턴함으로써 다음줄의 실행을 막음.
+Ui.message = ({msg, btns}) => new Promise(resolve => _.go( //promise를 리턴함으로써 다음줄의 실행을 막음.
     `
       <div class="confirm">
           <div class="msg">${msg}</div>
           <div class="buttons">
-            <button type="button" class="cancel">취소</button>
-            <button type="button" class="ok">확인</button>
+            ${_.strMap(btn => `  
+              <button type="button" class="${btn.type}">${btn.name}</button>
+              `, btns)}
           </div>
       </div>
     `,
     $.el,
     el => $.qs('html').appendChild(el), //body로하면 왜 안되지  //뒤에무조건 els가 오니까 $.on에서 els를 매개변수로 받음.
-    _.tap( //tap함수는 안의 내용이 어떤값을 리턴하든 바로 위값을 바로 밑에 리턴해준다.
-      $.find('.ok'),
+    ..._.map(btn => _.tap( //tap함수는 안의 내용이 어떤값을 리턴하든 바로 위값을 바로 밑에 리턴해준다.
+      $.find(`.${btn.type}`),
       $.on('click', e=> _.go(
         e.currentTarget,
         $.closest('.confirm'),
         $.remove,
-        resolve(true)
-    ))),
-    _.tap(
-      $.find('.cancel'),
-      $.on('click', e=> _.go(
-        e.currentTarget,
-        $.closest('.confirm'),
-        $.remove,
-        resolve(false)
-    ))),
+        resolve(btn.value)
+    ))), btns)
 ));
+
+
+Ui.confirm = msg => Ui.message({
+  msg,
+  btns : [
+  { name : '취소', type: 'cancel', value:false},
+  { name : '확인', type: 'ok', value:true},
+    
+  ]
+})
 
 // async function conf() {
 //   await Ui.confirm('정말 삭제하시겠습니까?'); //resolve를 주어야 코드가 아래라인으로간다.
@@ -118,5 +121,15 @@ Ui.confirm = msg => new Promise(resolve => _.go( //promise를 리턴함으로써
 // }
 
 // conf()
+
+Ui.alert = msg =>Ui.message({
+  msg,
+  btns : [
+  { name : '확인', type: 'ok', value:true},
+  ]
+})
+
+Ui.confirm('삭제하시겠습니까?.');
+
 
 </script>
