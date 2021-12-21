@@ -25,6 +25,8 @@ $.remove = el => el.parentNode.removeChild(el);
 
 $.on = (event, f) => els => 
 _.each(el => el.addEventListener(event, f), _.isIterable(els) ? els : [els]) //하나인경우도 []에 감싸주기에 each가 됨.
+
+$.addClass = _.curry((name, el) => el.classList.add(name));
 </script>
 
 <script>
@@ -56,8 +58,8 @@ _.strMap = _.curry(_.pipe(L.map, string));
 Images.tmpl = imgs => ` 
   <div class="images">
     ${_.strMap(img =>`
-      <div class="image">
-        <div class="box"><img src="${img.url}" alt =""></div>
+      <div class="img">
+        <div class="box"><img src="" lazy-src="${img.url}" class="fade" alt =""></div>
         <div class="name">${img.name}</div>
         <div class="remove">x</div>
       </div>
@@ -70,6 +72,16 @@ _.go(
   Images.tmpl,
   $.el,
   el => $.append($.qs('body'), el),
+  _.tap(
+    $.findAll('img'),
+    L.map(img => new Promise(resolve => {
+      img.onload = () => resolve(img);
+      img.src = img.getAttribute('lazy-src');
+      console.log(img.src);
+    })),
+    C.takeAll,
+    _.each($.addClass('fade-in'))
+  ),
   $.findAll('.remove'),
   $.on('click', async ({currentTarget}) => { //e.currentTarget을 if전에하면 뜨고 if안에하면 null이 뜬다. 이것은 가변적으로 값을 다루기때문에 나타나는 사이드이펙트이다.
                                             //해결책은 미리 가변적인 값을 불변적인 값으로 구조분해해서 꺼내놓는 것.
@@ -129,7 +141,20 @@ Ui.alert = msg =>Ui.message({
   ]
 })
 
-Ui.confirm('삭제하시겠습니까?.');
+Ui.confirm('삭제.');
 
 
 </script>
+
+<style>
+
+.fade {
+  opacity: 0;
+}
+
+.fade-in {
+  opacity: 1;
+  transition : opacity 1s;
+}
+
+</style>
