@@ -66,6 +66,27 @@ Images.tmpl = imgs => `
     ` ,imgs)}
   </div>
 `;
+Images.loader = limit => _.tap($.findAll('img'),
+    _.tap(console.log),
+    L.map(img => _ => new Promise(resolve => {
+      img.onload = () => resolve(img);
+      img.src = img.getAttribute('lazy-src');
+      console.log(img.src);
+    })),
+    C.takeAllWithLimit(limit),
+    _.each(_.each($.addClass('fade-in'))));
+
+
+C.takeAllWithLimit = _.curry((limit, iter) => {
+   //도메인을 건드리는 게 아닌 map이나 value같이 추상화된 함수들만 모여있으면 재사용성이 높아지기에 따로 뽑아서 쓸 수 있다.
+      let r = _.range(Infinity);
+      return _.go(
+        lazy,
+        _.groupBy(_ => Math.floor(r.next().value/4)), //그냥 promise를 바로 넣어주면 groupBy에서 풀려서 진행돼서 한번 더 꼬아준다.
+        L.values,
+        L.map(L.map(f=>f())),
+        L.map(C.takeAll),
+)});
 
 _.go(
   Images.fetch(),
