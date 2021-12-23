@@ -74,13 +74,25 @@ _.go(
   el => $.append($.qs('body'), el),
   _.tap(
     $.findAll('img'),
-    L.map(img => new Promise(resolve => {
+    _.tap(console.log),
+    L.map(img => _ => new Promise(resolve => {
       img.onload = () => resolve(img);
       img.src = img.getAttribute('lazy-src');
       console.log(img.src);
     })),
-    C.takeAll,
-    _.each($.addClass('fade-in'))
+    lazy => {
+      let r = _.range(Infinity);
+      return _.go(
+        lazy,
+        _.groupBy(_ => Math.floor(r.next().value/4)), //그냥 promise를 바로 넣어주면 groupBy에서 풀려서 진행돼서 한번 더 꼬아준다.
+        L.values,
+        L.map(L.map(f=>f())),
+        L.map(C.takeAll),
+        _.each(_.each($.addClass('fade-in')))
+      )
+    }
+    // C.takeAll,
+    // _.each($.addClass('fade-in'))
   ),
   $.findAll('.remove'),
   $.on('click', async ({currentTarget}) => { //e.currentTarget을 if전에하면 뜨고 if안에하면 null이 뜬다. 이것은 가변적으로 값을 다루기때문에 나타나는 사이드이펙트이다.
